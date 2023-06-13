@@ -333,6 +333,7 @@ public:
 
     mlir::RewritePatternSet patterns(context);
     patterns.add<ConvertTransConvert>(context);
+    // Note: test passes without MoveOpAfterLayoutConversion pattern.
     patterns.add<MoveOpAfterLayoutConversion>(context);
     if (applyPatternsAndFoldGreedily(m, std::move(patterns)).failed())
       signalPassFailure();
