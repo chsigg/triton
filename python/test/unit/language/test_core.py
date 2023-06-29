@@ -1846,7 +1846,7 @@ def test_permute(dtype_str, shape, perm, device):
                                            [64, 64, 32, 4],
                                            [32, 32, 128, 16],
                                            [128, 128, 64, 2],
-                                           [16, 16, 16, 4],
+                                           [16, 16, 16, 2],
                                            [64, 128, 128, 2]]
                           for allow_tf32 in [True]
                           for col_a in [True, False]
@@ -1898,7 +1898,7 @@ def test_dot(M, N, K, num_warps, col_a, col_b, epilogue, allow_tf32, in_dtype, o
         x = tl.load(Xs)
         y = tl.load(Ys)
         x = x.to(tl.float32)
-        y = y.to(tl.float32)
+        y = y + 1.0
         z = tl.dot(x, y, allow_tf32=ALLOW_TF32, out_dtype=out_dtype)
         if ADD_MATRIX:
             z += tl.load(Zs)
@@ -1943,7 +1943,7 @@ def test_dot(M, N, K, num_warps, col_a, col_b, epilogue, allow_tf32, in_dtype, o
     if out_dtype == 'int8':
         z = 1 + numpy_random((M, N), dtype_str='int32', rs=rs)
     else:
-        z = 1 + numpy_random((M, N), dtype_str=in_dtype, rs=rs) * .1
+        z = 1 + numpy_random((M, N), dtype_str=out_dtype, rs=rs) * .1
 
     z_tri = to_triton(z, device=device)
     if epilogue == 'trans':
@@ -1978,7 +1978,7 @@ def test_dot(M, N, K, num_warps, col_a, col_b, epilogue, allow_tf32, in_dtype, o
         z_ref = np.matmul(x.astype(np.float32),
                           y.astype(np.float32())).astype(np.int32)
     else:
-        z_ref = np.matmul(x, y)
+        z_ref = np.matmul(x, y + 1.0)
 
     if epilogue == 'add-matrix':
         z_ref += z
