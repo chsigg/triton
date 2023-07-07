@@ -605,7 +605,7 @@ cc_binary(
         "@llvm-project//mlir:ToLLVMIRTranslation",
         "@llvm-project//mlir:TransformUtils",
         "@llvm-project//mlir:Transforms",
-        # copybara:uncomment "//third_party/triton/test:TritonTestAnalysis",
+        "//test:TritonTestAnalysis",
     ],
 )
 
